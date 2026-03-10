@@ -867,7 +867,7 @@ function authLogin() {
   var modeMap = {student:'student', vendor:'vendor', rider:'rider'};
   var sel = document.querySelector('.mode-select');
   if (sel) { sel.value = modeMap[currentAuthRole]; switchMode(modeMap[currentAuthRole]); }
-  switchTab('home');
+  // switchMode already routes vendor→vendor tab and rider→rider tab
 }
 
 function authSignup() {
