@@ -283,23 +283,42 @@ body{display:flex;flex-direction:column;min-height:100vh;}
 .reject-btn{background:#fff0f0;color:var(--red);border:none;border-radius:8px;padding:9px 14px;font-weight:700;font-size:12px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;}
 
 /* ── RIDER DASHBOARD ── */
-.rider-top{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:20px;}
-@media(min-width:600px){.rider-top{grid-template-columns:1fr 1fr;}}
-.rider-profile-card{background:var(--white);border-radius:16px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
-.rider-hdr{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
-.rider-name{font-size:16px;font-weight:800;}
-.rider-veh{font-size:12px;color:var(--muted);}
-.rider-online{font-size:11px;font-weight:700;color:#00875a;background:#e0f7f0;padding:3px 10px;border-radius:20px;margin-left:auto;}
-.rider-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.rstat{background:var(--bg);border-radius:10px;padding:12px;text-align:center;}
-.rstat-num{font-size:18px;font-weight:800;color:var(--teal-dark);}
-.rstat-lbl{font-size:10px;color:var(--muted);}
-.del-req{background:linear-gradient(135deg,var(--teal),var(--teal-dark));border-radius:16px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
-.del-req-title{color:#fff;font-size:15px;font-weight:800;margin-bottom:10px;}
-.del-req-info{font-size:13px;color:rgba(255,255,255,.85);margin-bottom:4px;}
-.del-req-btns{display:flex;gap:10px;margin-top:14px;}
-.accept-btn{flex:1;background:#fff;color:var(--teal-dark);border:none;border-radius:10px;padding:11px;font-weight:800;font-size:13px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;}
-.decline-btn{background:rgba(255,255,255,.18);color:#fff;border:none;border-radius:10px;padding:11px 16px;font-weight:700;font-size:13px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;}
+/* ── RIDER DASHBOARD ─────────────────────────── */
+.rider-hero{background:linear-gradient(135deg,#0bbfbf 0%,#088f8f 100%);border-radius:20px;padding:20px;margin-bottom:18px;color:#fff;position:relative;overflow:hidden;}
+
+.rider-hero-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.rider-avatar{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:22px;border:2px solid rgba(255,255,255,.4);}
+.rider-info{flex:1;margin-left:12px;}
+.rider-name{font-size:17px;font-weight:800;color:#fff;}
+.rider-veh{font-size:12px;color:rgba(255,255,255,.75);margin-top:2px;}
+.rider-online{font-size:11px;font-weight:700;color:#00d48a;background:rgba(0,255,160,.15);border:1px solid rgba(0,255,160,.3);padding:4px 10px;border-radius:20px;}
+.rider-offline-pill{font-size:11px;font-weight:700;color:#ffd07a;background:rgba(255,200,0,.15);border:1px solid rgba(255,200,0,.3);padding:4px 10px;border-radius:20px;}
+.rider-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.rstat{background:rgba(255,255,255,.15);border-radius:12px;padding:12px 8px;text-align:center;backdrop-filter:blur(4px);}
+.rstat-num{font-size:18px;font-weight:800;color:#fff;}
+.rstat-lbl{font-size:10px;color:rgba(255,255,255,.7);margin-top:2px;letter-spacing:.02em;}
+/* delivery request */
+.del-req-wrap{margin-bottom:18px;}
+.del-req{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 4px 20px rgba(11,191,191,.15);border:1.5px solid rgba(11,191,191,.2);}
+.del-req-header{background:linear-gradient(135deg,#0bbfbf,#088f8f);padding:14px 18px;display:flex;align-items:center;gap:10px;}
+.del-req-header-icon{width:34px;height:34px;background:rgba(255,255,255,.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.del-req-title{color:#fff;font-size:14px;font-weight:800;}
+.del-req-subtitle{color:rgba(255,255,255,.8);font-size:11px;margin-top:1px;}
+.del-req-body{padding:16px 18px;}
+.del-req-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
+.del-req-row:last-of-type{border-bottom:none;}
+.del-req-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.del-req-row-label{font-size:11px;color:var(--muted);margin-bottom:1px;}
+.del-req-row-val{font-size:13px;font-weight:700;color:var(--text);}
+.del-req-earn{color:var(--teal-dark);}
+.del-req-btns{display:flex;gap:10px;padding:0 18px 16px;}
+.accept-btn{flex:1;background:linear-gradient(135deg,#0bbfbf,#088f8f);color:#fff;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:opacity .2s;}
+.accept-btn:hover{opacity:.9;}
+.decline-btn{background:#f5f5f5;color:var(--muted);border:none;border-radius:12px;padding:13px 18px;font-weight:700;font-size:13px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:background .2s;}
+.decline-btn:hover{background:#ebebeb;}
+/* today's deliveries */
+.rider-history .order-card{border-left:3px solid var(--teal);}
+.earn-badge{display:inline-block;background:#e8faf5;color:#00875a;font-size:13px;font-weight:800;padding:4px 10px;border-radius:8px;}
 
 /* ── MODAL ── */
 .modal-overlay{display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);justify-content:center;align-items:flex-end;}
@@ -717,48 +736,124 @@ body{display:flex;flex-direction:column;min-height:100vh;}
 
       <!-- RIDER DASHBOARD -->
       <div class="pg" id="pg-rider">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
-          <div class="pg-title" style="margin-bottom:0">🏍️ Rider Dashboard</div>
-          <div style="display:flex;align-items:center;gap:10px;">
-            <span style="font-size:12px;font-weight:700;color:var(--muted)" id="rider-status-lbl">● Online</span>
-            <div class="toggle-track" id="rider-toggle" onclick="toggleRiderStatus()" style="background:var(--teal)">
-              <div class="toggle-thumb" style="transform:translateX(20px)"></div>
+
+        <!-- HERO PROFILE CARD -->
+        <div class="rider-hero">
+          <div class="rider-hero-top">
+            <div style="display:flex;align-items:center;gap:12px;flex:1;">
+              <div class="rider-avatar">🏍️</div>
+              <div class="rider-info">
+                <div class="rider-name">Emeka Nwosu</div>
+                <div class="rider-veh">Motorcycle · UNIBEN Campus Rider</div>
+              </div>
+              <div id="rider-badge" class="rider-online">● Online</div>
             </div>
-          </div>
-        </div>
-        <div id="rider-offline-banner" style="display:none;background:#fff4e0;border:1px solid #ffd07a;border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:13px;font-weight:600;color:#d48800;">
-          🔴 You are offline. Go online to start receiving delivery requests.
-        </div>
-        <div class="rider-top">
-          <div class="rider-profile-card">
-            <div class="rider-hdr">
-              <span style="font-size:38px">🏍️</span>
-              <div><div class="rider-name">Emeka Nwosu</div><div class="rider-veh">Motorcycle · UNIBEN Campus Rider</div></div>
-              <div class="rider-online" id="rider-badge">● Online</div>
-            </div>
-            <div class="rider-stats">
-              <div class="rstat"><div class="rstat-num">12</div><div class="rstat-lbl">Deliveries</div></div>
-              <div class="rstat"><div class="rstat-num">₦3,600</div><div class="rstat-lbl">Earned Today</div></div>
-              <div class="rstat"><div class="rstat-num">18.4km</div><div class="rstat-lbl">Distance</div></div>
-            </div>
-          </div>
-          <div id="delivery-request-card">
-            <div class="del-req">
-              <div class="del-req-title">🔔 New Delivery Request</div>
-              <div class="del-req-info">📦 Pick up: <strong style="color:#fff">Buka 1</strong></div>
-              <div class="del-req-info">📍 Deliver to: <strong style="color:#fff">Mary Slessor Hall</strong></div>
-              <div class="del-req-info">💰 Earn: <strong style="color:#fff">₦350</strong> · Est. 14 min</div>
-              <div class="del-req-btns">
-                <button class="accept-btn" onclick="acceptDelivery()">Accept Delivery</button>
-                <button class="decline-btn" onclick="declineDelivery()">Decline</button>
+            <div style="display:flex;align-items:center;gap:8px;margin-left:12px;">
+              <div class="toggle-track" id="rider-toggle" onclick="toggleRiderStatus()" style="background:rgba(255,255,255,.3);">
+                <div class="toggle-thumb" style="transform:translateX(20px)"></div>
               </div>
             </div>
           </div>
+          <div class="rider-stats">
+            <div class="rstat">
+              <div class="rstat-num">12</div>
+              <div class="rstat-lbl">Deliveries</div>
+            </div>
+            <div class="rstat">
+              <div class="rstat-num">₦3,600</div>
+              <div class="rstat-lbl">Earned Today</div>
+            </div>
+            <div class="rstat">
+              <div class="rstat-num">18.4km</div>
+              <div class="rstat-lbl">Distance</div>
+            </div>
+          </div>
         </div>
+
+        <!-- OFFLINE BANNER -->
+        <div id="rider-offline-banner" style="display:none;background:#fff4e0;border:1px solid #ffd07a;border-radius:14px;padding:13px 16px;margin-bottom:16px;font-size:13px;font-weight:600;color:#d48800;display:none;align-items:center;gap:8px;">
+          <span style="font-size:18px;">🔴</span> You're offline. Toggle online to receive delivery requests.
+        </div>
+
+        <!-- NEW DELIVERY REQUEST CARD -->
+        <div class="del-req-wrap" id="delivery-request-card">
+          <div class="del-req">
+            <div class="del-req-header">
+              <div class="del-req-header-icon">🔔</div>
+              <div>
+                <div class="del-req-title">New Delivery Request</div>
+                <div class="del-req-subtitle">Respond within 30 seconds</div>
+              </div>
+            </div>
+            <div class="del-req-body">
+              <div class="del-req-row">
+                <div class="del-req-icon" style="background:#e8f4ff;">📦</div>
+                <div>
+                  <div class="del-req-row-label">Pick up from</div>
+                  <div class="del-req-row-val">Buka 1 · Near John Harris Library</div>
+                </div>
+              </div>
+              <div class="del-req-row">
+                <div class="del-req-icon" style="background:#fff0f0;">📍</div>
+                <div>
+                  <div class="del-req-row-label">Deliver to</div>
+                  <div class="del-req-row-val">Hall 6</div>
+                </div>
+              </div>
+              <div class="del-req-row">
+                <div class="del-req-icon" style="background:#e8faf5;">💰</div>
+                <div>
+                  <div class="del-req-row-label">Your earnings · Est. time</div>
+                  <div class="del-req-row-val del-req-earn">₦300 &nbsp;·&nbsp; ~14 min</div>
+                </div>
+              </div>
+            </div>
+            <div class="del-req-btns">
+              <button class="accept-btn" onclick="acceptDelivery()">✓ Accept Delivery</button>
+              <button class="decline-btn" onclick="declineDelivery()">Decline</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TODAY'S DELIVERIES -->
         <div class="sec-title">Today's Deliveries</div>
-        <div class="orders-grid">
-          <div class="order-card"><div class="order-hdr"><div><div class="order-id">Order #2841 — Chinedu A.</div><div class="order-date">1:30 PM — New Hall</div></div><div class="status-tag s-delivered">Done ✓</div></div><div class="order-ftr"><div class="order-total">+₦300</div></div></div>
-          <div class="order-card"><div class="order-hdr"><div><div class="order-id">Order #2835 — Ngozi P.</div><div class="order-date">12:15 PM — Eghosa Hall</div></div><div class="status-tag s-delivered">Done ✓</div></div><div class="order-ftr"><div class="order-total">+₦300</div></div></div>
+        <div class="orders-grid rider-history">
+          <div class="order-card">
+            <div class="order-hdr">
+              <div>
+                <div class="order-id">Order #2841 — Chinedu A.</div>
+                <div class="order-date">1:30 PM · New Hall</div>
+              </div>
+              <div class="status-tag s-delivered">Done ✓</div>
+            </div>
+            <div class="order-ftr">
+              <span class="earn-badge">+₦300</span>
+            </div>
+          </div>
+          <div class="order-card">
+            <div class="order-hdr">
+              <div>
+                <div class="order-id">Order #2835 — Ngozi P.</div>
+                <div class="order-date">12:15 PM · Eghosa Hall</div>
+              </div>
+              <div class="status-tag s-delivered">Done ✓</div>
+            </div>
+            <div class="order-ftr">
+              <span class="earn-badge">+₦300</span>
+            </div>
+          </div>
+          <div class="order-card">
+            <div class="order-hdr">
+              <div>
+                <div class="order-id">Order #2829 — Tunde B.</div>
+                <div class="order-date">10:45 AM · Hall 6</div>
+              </div>
+              <div class="status-tag s-delivered">Done ✓</div>
+            </div>
+            <div class="order-ftr">
+              <span class="earn-badge">+₦300</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1264,7 +1359,7 @@ function toggleVendorStatus() {
 /* ─── RIDER TOGGLE ─── */
 var riderOnline = true;
 var pendingRequests = [
-  { from:'Buka 1', to:'Mary Slessor Hall', earn:350, eta:14 },
+  { from:'Buka 1', to:'Hall 6', earn:300, eta:14 },
   { from:'Campus Bite', to:'New Hall', earn:300, eta:10 },
   { from:'Buka 1', to:'Eghosa Hall', earn:320, eta:12 },
   { from:'Campus Bite', to:'1000LT Block', earn:280, eta:8 }
@@ -1274,25 +1369,22 @@ var currentRequestIndex = 0;
 function toggleRiderStatus() {
   riderOnline = !riderOnline;
   var track  = document.getElementById('rider-toggle');
-  var lbl    = document.getElementById('rider-status-lbl');
   var badge  = document.getElementById('rider-badge');
   var banner = document.getElementById('rider-offline-banner');
   var reqCard= document.getElementById('delivery-request-card');
   if (riderOnline) {
-    track.classList.remove('off'); track.style.background='var(--teal)';
+    track.classList.remove('off'); track.style.background='rgba(255,255,255,.3)';
     track.querySelector('.toggle-thumb').style.transform='translateX(20px)';
-    lbl.textContent='● Online'; lbl.style.color='#00875a';
-    badge.textContent='● Online'; badge.style.background='#e0f7f0'; badge.style.color='#00875a';
+    badge.textContent='● Online'; badge.className='rider-online';
     banner.style.display='none';
-    reqCard.style.display='block';
+    if(reqCard) reqCard.style.display='block';
     showToast('✅ You are now Online');
   } else {
-    track.classList.add('off'); track.style.background='#ccc';
+    track.classList.add('off'); track.style.background='rgba(0,0,0,.25)';
     track.querySelector('.toggle-thumb').style.transform='translateX(0px)';
-    lbl.textContent='● Offline'; lbl.style.color='var(--red)';
-    badge.textContent='● Offline'; badge.style.background='#fff0f0'; badge.style.color='var(--red)';
-    banner.style.display='block';
-    reqCard.style.display='none';
+    badge.textContent='● Offline'; badge.className='rider-offline-pill';
+    banner.style.display='flex';
+    if(reqCard) reqCard.style.display='none';
     showToast('🔴 You are now Offline');
   }
 }
@@ -1301,26 +1393,32 @@ function renderDeliveryRequest() {
   var card = document.getElementById('delivery-request-card');
   if (!card) return;
   if (!riderOnline) { card.style.display='none'; return; }
+  card.style.display='block';
   var r = pendingRequests[currentRequestIndex % pendingRequests.length];
   card.innerHTML = '<div class="del-req">'
-    +'<div class="del-req-title">🔔 New Delivery Request</div>'
-    +'<div class="del-req-info">📦 Pick up: <strong style="color:#fff">'+r.from+'</strong></div>'
-    +'<div class="del-req-info">📍 Deliver to: <strong style="color:#fff">'+r.to+'</strong></div>'
-    +'<div class="del-req-info">💰 Earn: <strong style="color:#fff">&#8358;'+r.earn+'</strong> · Est. '+r.eta+' min</div>'
-    +'<div class="del-req-btns">'
-    +'<button class="accept-btn" onclick="acceptDelivery()">Accept Delivery</button>'
-    +'<button class="decline-btn" onclick="declineDelivery()">Decline</button>'
-    +'</div></div>';
+    +'<div class="del-req-header"><div class="del-req-header-icon">🔔</div>'
+    +'<div><div class="del-req-title">New Delivery Request</div><div class="del-req-subtitle">Respond within 30 seconds</div></div></div>'
+    +'<div class="del-req-body">'
+    +'<div class="del-req-row"><div class="del-req-icon" style="background:#e8f4ff;">📦</div><div><div class="del-req-row-label">Pick up from</div><div class="del-req-row-val">'+r.from+'</div></div></div>'
+    +'<div class="del-req-row"><div class="del-req-icon" style="background:#fff0f0;">📍</div><div><div class="del-req-row-label">Deliver to</div><div class="del-req-row-val">'+r.to+'</div></div></div>'
+    +'<div class="del-req-row"><div class="del-req-icon" style="background:#e8faf5;">💰</div><div><div class="del-req-row-label">Your earnings · Est. time</div><div class="del-req-row-val del-req-earn">&#8358;'+r.earn+' &nbsp;·&nbsp; ~'+r.eta+' min</div></div></div>'
+    +'</div>'
+    +'<div class="del-req-btns"><button class="accept-btn" onclick="acceptDelivery()">✓ Accept Delivery</button><button class="decline-btn" onclick="declineDelivery()">Decline</button></div>'
+    +'</div>';
 }
+
 
 function acceptDelivery() {
   var r = pendingRequests[currentRequestIndex % pendingRequests.length];
   var card = document.getElementById('delivery-request-card');
-  card.innerHTML = '<div class="del-req" style="background:linear-gradient(135deg,#00875a,#00a86b)">'
-    +'<div class="del-req-title">🏍️ On the way!</div>'
-    +'<div class="del-req-info">Head to <strong style="color:#fff">'+r.from+'</strong> to pick up the order</div>'
-    +'<div class="del-req-info" style="margin-top:8px">📍 Deliver to: <strong style="color:#fff">'+r.to+'</strong></div>'
-    +'<div class="del-req-btns"><button class="accept-btn" onclick="completeDelivery('+r.earn+')">Mark as Delivered ✓</button></div>'
+  card.innerHTML = '<div class="del-req">'
+    +'<div class="del-req-header" style="background:linear-gradient(135deg,#00875a,#00a86b)"><div class="del-req-header-icon">🏍️</div>'
+    +'<div><div class="del-req-title">On the way!</div><div class="del-req-subtitle">Order picked up · En route</div></div></div>'
+    +'<div class="del-req-body">'
+    +'<div class="del-req-row"><div class="del-req-icon" style="background:#e8f4ff;">📦</div><div><div class="del-req-row-label">Picked up from</div><div class="del-req-row-val">'+r.from+'</div></div></div>'
+    +'<div class="del-req-row"><div class="del-req-icon" style="background:#fff0f0;">📍</div><div><div class="del-req-row-label">Delivering to</div><div class="del-req-row-val">'+r.to+'</div></div></div>'
+    +'</div>'
+    +'<div class="del-req-btns"><button class="accept-btn" style="background:linear-gradient(135deg,#00875a,#00a86b)" onclick="completeDelivery('+r.earn+')">Mark as Delivered ✓</button></div>'
     +'</div>';
   showToast('🏍️ Accepted! Head to '+r.from);
 }
