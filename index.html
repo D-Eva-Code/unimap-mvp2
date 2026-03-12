@@ -1118,16 +1118,27 @@ function mapNavTo(lat, lng, name) {
 
 /* ─── MAP ─── */
 function initMap() {
-  var userLat = 6.3958, userLng = 5.6211;
+  var userLat = 6.3958, userLng = 5.6211; // campus centre fallback
   var map = L.map('leaflet-map',{zoomControl:true,attributionControl:false}).setView([userLat,userLng],16);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-  function pin(c,size){
-    size=size||13;
-    return L.divIcon({
-      html:'<div style="background:'+c+';width:'+size+'px;height:'+size+'px;border-radius:50%;border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>',
-      className:'',iconAnchor:[size/2,size/2]
-    });
+  // Inject pulse animation once
+  if (!document.getElementById('gps-pulse-style')) {
+    var s = document.createElement('style');
+    s.id = 'gps-pulse-style';
+    s.textContent = '@keyframes gps-pulse{0%{transform:scale(1);opacity:.5}100%{transform:scale(3.5);opacity:0}}';
+    document.head.appendChild(s);
+  }
+
+  function pin(c,size,pulse){
+    size = size || 13;
+    var inner = pulse
+      ? '<div style="position:relative;width:'+(size+8)+'px;height:'+(size+8)+'px;display:flex;align-items:center;justify-content:center;">'
+        + '<div style="position:absolute;width:'+size+'px;height:'+size+'px;border-radius:50%;background:'+c+';opacity:.3;animation:gps-pulse 1.8s ease-out infinite;"></div>'
+        + '<div style="position:relative;background:'+c+';width:'+size+'px;height:'+size+'px;border-radius:50%;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,.35);"></div>'
+        + '</div>'
+      : '<div style="background:'+c+';width:'+size+'px;height:'+size+'px;border-radius:50%;border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>';
+    return L.divIcon({html:inner, className:'', iconAnchor:[(size+8)/2,(size+8)/2]});
   }
 
   // named locations with coords
@@ -1141,9 +1152,48 @@ function initMap() {
     { name:'Mary Slessor Hall',         lat:6.3970, lng:5.6195, color:'#0BBFBF', label:'🏠 Mary Slessor Hall' }
   ];
 
-  // user marker
-  var userMarker = L.marker([userLat,userLng],{icon:pin('#0BBFBF',16)}).addTo(map);
-  userMarker.bindPopup('<b>📍 You are here</b>').openPopup();
+  // Place a grey "locating…" marker at campus centre while GPS loads
+  var userMarker = L.marker([userLat,userLng],{icon:pin('#aaaaaa',16,false)}).addTo(map);
+  userMarker.bindPopup('<b>📍 Locating you…</b>').openPopup();
+
+  // Request real GPS
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      function(pos) {
+        userLat = pos.coords.latitude;
+        userLng = pos.coords.longitude;
+        userMarker.setLatLng([userLat, userLng]);
+        userMarker.setIcon(pin('#0BBFBF', 16, true));
+        map.setView([userLat, userLng], 17);
+
+        // Reverse geocode for a readable street/place label
+        fetch('https://nominatim.openstreetmap.org/reverse?lat='+userLat+'&lon='+userLng+'&format=json')
+          .then(function(r){ return r.json(); })
+          .then(function(d) {
+            var a = d.address || {};
+            var label = a.road || a.building || a.neighbourhood || a.suburb || 'Your Location';
+            userMarker.bindPopup(
+              '<b>📍 You are here</b><br><span style="font-size:11px;color:#555;">'+label+'</span>'
+            ).openPopup();
+          })
+          .catch(function(){
+            userMarker.bindPopup('<b>📍 You are here</b>').openPopup();
+          });
+      },
+      function() {
+        // Fallback: GPS denied/unavailable
+        userMarker.setIcon(pin('#0BBFBF',16,false));
+        userMarker.bindPopup(
+          '<b>📍 You are here</b><br><span style="font-size:11px;color:#888;">GPS unavailable — using campus centre</span>'
+        ).openPopup();
+        showToast('📍 Enable location permission for accurate routing');
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  } else {
+    userMarker.setIcon(pin('#0BBFBF',16,false));
+    userMarker.bindPopup('<b>📍 You are here</b><br><span style="font-size:11px;color:#888;">GPS not supported</span>').openPopup();
+  }
 
   // draw location markers
   var activeRoute = null;
@@ -1163,33 +1213,15 @@ function initMap() {
   });
 
   function navigateTo(destLat, destLng, name, clickedMarker) {
-    // haversine distance in metres
-    var R = 6371000;
-    var dLat = (destLat - userLat) * Math.PI/180;
-    var dLng = (destLng - userLng) * Math.PI/180;
-    var a = Math.sin(dLat/2)*Math.sin(dLat/2)
-          + Math.cos(userLat*Math.PI/180)*Math.cos(destLat*Math.PI/180)
-          * Math.sin(dLng/2)*Math.sin(dLng/2);
-    var distMetres = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    var distKm = (distMetres/1000).toFixed(2);
-
-    // walking speed ~80m/min
-    var walkMins = Math.max(1, Math.round(distMetres / 80));
-
-    // update bar
     var etaEl = document.getElementById('map-eta-text');
     var bar   = document.getElementById('map-bar');
-    etaEl.innerHTML = '🚶 <b>'+walkMins+' min</b> · '+distKm+' km · to '+name;
+
+    // Show loading state immediately
+    etaEl.innerHTML = '⏳ Getting walking route…';
     bar.style.background = 'var(--teal-light)';
     bar.style.borderColor = 'var(--teal)';
-    setTimeout(function(){ bar.style.background='var(--white)'; bar.style.borderColor='var(--border)'; }, 900);
 
-    // draw route line
-    if (activeRoute) map.removeLayer(activeRoute);
-    activeRoute = L.polyline([[userLat,userLng],[destLat,destLng]],
-      {color:'#0BBFBF',weight:4,opacity:.9,dashArray:'8,6'}).addTo(map);
-
-    // drop a pin if clicking empty map (not a named marker)
+    // Drop pin / open popup instantly (don't wait for route)
     if (!clickedMarker) {
       if (activeMarker) map.removeLayer(activeMarker);
       activeMarker = L.marker([destLat,destLng],{icon:pin('#e74c3c',13)}).addTo(map);
@@ -1198,8 +1230,53 @@ function initMap() {
       clickedMarker.openPopup();
     }
 
-    // fit both points in view
-    map.fitBounds([[userLat,userLng],[destLat,destLng]], {padding:[40,40]});
+    // Fetch real walking route from OSRM (free, no API key)
+    var osrmUrl = 'https://router.project-osrm.org/route/v1/foot/'
+      + userLng+','+userLat+';'+destLng+','+destLat
+      + '?overview=full&geometries=geojson';
+
+    fetch(osrmUrl)
+      .then(function(r){ return r.json(); })
+      .then(function(data) {
+        if (!data.routes || !data.routes.length) { throw new Error('No route'); }
+        var route = data.routes[0];
+        var distMetres = route.distance;                        // actual path length
+        var distKm     = (distMetres / 1000).toFixed(2);
+        var walkMins   = Math.max(1, Math.round(distMetres / 80)); // ~80 m/min walking
+
+        // Update ETA bar with real numbers
+        etaEl.innerHTML = '🚶 <b>'+walkMins+' min</b> · '+distKm+' km · to '+name;
+        setTimeout(function(){ bar.style.background='var(--white)'; bar.style.borderColor='var(--border)'; }, 900);
+
+        // Draw the REAL route geometry (follows roads/paths)
+        if (activeRoute) map.removeLayer(activeRoute);
+        activeRoute = L.geoJSON(route.geometry, {
+          style:{ color:'#0BBFBF', weight:5, opacity:.9, dashArray:'10,7', lineCap:'round', lineJoin:'round' }
+        }).addTo(map);
+
+        // Fit map to the actual route bounds
+        map.fitBounds(activeRoute.getBounds(), {padding:[40,40]});
+      })
+      .catch(function() {
+        // Fallback: straight-line haversine if OSRM fails (e.g. offline)
+        var R = 6371000;
+        var dLat = (destLat - userLat) * Math.PI/180;
+        var dLng = (destLng - userLng) * Math.PI/180;
+        var a = Math.sin(dLat/2)*Math.sin(dLat/2)
+              + Math.cos(userLat*Math.PI/180)*Math.cos(destLat*Math.PI/180)
+              * Math.sin(dLng/2)*Math.sin(dLng/2);
+        var distMetres = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        var distKm     = (distMetres/1000).toFixed(2);
+        var walkMins   = Math.max(1, Math.round(distMetres / 80));
+
+        etaEl.innerHTML = '🚶 <b>'+walkMins+' min</b> · '+distKm+' km · to '+name+' <span style="font-size:10px;color:var(--muted)">(est.)</span>';
+        bar.style.background = 'var(--white)'; bar.style.borderColor = 'var(--border)';
+
+        if (activeRoute) map.removeLayer(activeRoute);
+        activeRoute = L.polyline([[userLat,userLng],[destLat,destLng]],
+          {color:'#0BBFBF',weight:4,opacity:.7,dashArray:'8,6'}).addTo(map);
+        map.fitBounds([[userLat,userLng],[destLat,destLng]], {padding:[40,40]});
+      });
   }
 
   // expose for external calls (nearby list)
